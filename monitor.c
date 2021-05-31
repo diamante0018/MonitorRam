@@ -64,29 +64,30 @@ void checkStatus(FILE *file, int *currRealMem, int *peakRealMem,
 void isProcessWild(int currRealMem, int peakRealMem,
                    int currVirtMem, int peakVirtMem, int ID)
 {
-    // Logs to a file in case something is up
-    if (currRealMem > MAX_MEMORY)
+    if (currRealMem <= MAX_MEMORY)
     {
-        FILE *fp;
-        fp = fopen("Diavolo.txt", "a");
-        if (fp == NULL)
-        {
-            perror("popen");
-            exit(EXIT_FAILURE);
-        }
+        return;
+    }
+    // Logs to a file in case something is up
+    FILE *fp;
+    fp = fopen("Diavolo.txt", "a");
+    if (fp == NULL)
+    {
+        perror("popen");
+        exit(EXIT_FAILURE);
+    }
 
-        printTimeStamp(fp);
-        fprintf(fp, "WARNING: Exceeded %d KiB of Real Memory for process ID: %d\n", MAX_MEMORY, ID);
-        fprintf(fp, "Process ID: %d\ncurrRealMem:%d KiB\npeakRealMem:%d KiB\ncurrVirtMem:%d KiB\npeakVirtMem:%d KiB\n", ID, currRealMem, peakRealMem, currVirtMem, peakVirtMem);
-        fclose(fp);
-        // Sends a polite request to terminate
-        printf("Terminating process: %d. Too much memory!\n", ID);
-        int result = kill(ID, SIGTERM);
-        if (result)
-        {
-            printf("Error while terminating process: %d\n", ID);
-            printf("Error message: %s\n", strerror(errno));
-        }
+    printTimeStamp(fp);
+    fprintf(fp, "WARNING: Exceeded %d KiB of Real Memory for process ID: %d\n", MAX_MEMORY, ID);
+    fprintf(fp, "Process ID: %d\ncurrRealMem:%d KiB\npeakRealMem:%d KiB\ncurrVirtMem:%d KiB\npeakVirtMem:%d KiB\n", ID, currRealMem, peakRealMem, currVirtMem, peakVirtMem);
+    fclose(fp);
+    // Sends a polite request to terminate
+    printf("Terminating process: %d. Too much memory!\n", ID);
+    int result = kill(ID, SIGTERM);
+    if (result)
+    {
+        printf("Error while terminating process: %d\n", ID);
+        printf("Error message: %s\n", strerror(errno));
     }
 }
 
