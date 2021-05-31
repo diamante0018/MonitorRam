@@ -61,12 +61,12 @@ void checkStatus(FILE *file, int *currRealMem, int *peakRealMem,
     }
 }
 
-void isProcessWild(int currRealMem, int peakRealMem,
+int isProcessWild(int currRealMem, int peakRealMem,
                    int currVirtMem, int peakVirtMem, int ID)
 {
     if (currRealMem <= MAX_MEMORY)
     {
-        return;
+        return 0;
     }
 
     // Sends a polite request to terminate
@@ -91,6 +91,7 @@ void isProcessWild(int currRealMem, int peakRealMem,
     fprintf(fp, "WARNING: Exceeded %d KiB of Real Memory for process ID: %d\n", MAX_MEMORY, ID);
     fprintf(fp, "Process ID: %d\ncurrRealMem:%d KiB\npeakRealMem:%d KiB\ncurrVirtMem:%d KiB\npeakVirtMem:%d KiB\n", ID, currRealMem, peakRealMem, currVirtMem, peakVirtMem);
     fclose(fp);
+    return 1;
 }
 
 static int processID[MAX_TRACK_SIZE] = {0};
@@ -142,7 +143,11 @@ void analyse()
         }
 
         checkStatus(status, &currRealMem, &peakRealMem, &currVirtMem, &peakVirtMem);
-        isProcessWild(currRealMem, peakRealMem, currVirtMem, peakVirtMem, processID[i]);
+        if (isProcessWild(currRealMem, peakRealMem, currVirtMem, peakVirtMem, processID[i]))
+        {
+            processID[i] = 0;
+        }
+
         pclose(status);
         currRealMem = 0, peakRealMem = 0, currVirtMem = 0, peakVirtMem = 0;
     }
