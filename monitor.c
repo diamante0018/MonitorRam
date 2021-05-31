@@ -62,7 +62,7 @@ void checkStatus(FILE *file, int *currRealMem, int *peakRealMem,
 }
 
 int isProcessWild(int currRealMem, int peakRealMem,
-                   int currVirtMem, int peakVirtMem, int ID)
+                  int currVirtMem, int peakVirtMem, int ID)
 {
     if (currRealMem <= MAX_MEMORY)
     {
@@ -121,6 +121,12 @@ void setup(const char *pid)
             printf("Too many processes found\n");
             break;
         }
+    }
+
+    if (i == 0)
+    {
+        printf("No process was found\n");
+        exit(EXIT_SUCCESS);
     }
 
     pclose(file);
