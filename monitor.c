@@ -21,32 +21,42 @@ void checkStatus(FILE *file, int *currRealMem, int *peakRealMem,
     char result[BUFFER_SIZE];
     bzero(result, sizeof(result));
 
-    if (file == NULL)
-    {
-        perror("popen");
-        exit(EXIT_FAILURE);
-    }
-
     while (fscanf(file, " %1023s", result) == 1)
     {
         if (strcmp(result, "VmRSS:") == 0)
         {
-            fscanf(file, " %d", currRealMem);
+            if (fscanf(file, " %d", currRealMem) == EOF)
+            {
+                printf("Error while parsing file\n");
+                return;
+            }
         }
 
         if (strcmp(result, "VmHWM:") == 0)
         {
-            fscanf(file, " %d", peakRealMem);
+            if (fscanf(file, " %d", peakRealMem) == EOF)
+            {
+                printf("Error while parsing file\n");
+                return;
+            }
         }
 
         if (strcmp(result, "VmSize:") == 0)
         {
-            fscanf(file, " %d", currVirtMem);
+            if (fscanf(file, " %d", currVirtMem) == EOF)
+            {
+                printf("Error while parsing file\n");
+                return;
+            }
         }
 
         if (strcmp(result, "VmPeak:") == 0)
         {
-            fscanf(file, " %d", peakVirtMem);
+            if (fscanf(file, " %d", peakVirtMem) == EOF)
+            {
+                printf("Error while parsing file\n");
+                return;
+            }
         }
     }
 }
@@ -59,11 +69,18 @@ void isProcessWild(int currRealMem, int peakRealMem,
     {
         FILE *fp;
         fp = fopen("Diavolo.txt", "a");
+        if (fp == NULL)
+        {
+            perror("popen");
+            exit(EXIT_FAILURE);
+        }
+
         printTimeStamp(fp);
         fprintf(fp, "WARNING: Exceeded %d KiB of Real Memory for process ID: %d\n", MAX_MEMORY, ID);
         fprintf(fp, "Process ID: %d\ncurrRealMem:%d KiB\npeakRealMem:%d KiB\ncurrVirtMem:%d KiB\npeakVirtMem:%d KiB\n", ID, currRealMem, peakRealMem, currVirtMem, peakVirtMem);
         fclose(fp);
         // Sends a polite request to terminate
+        printf("Terminating process: %d. Too much memory!\n", ID);
         int result = kill(ID, SIGTERM);
         if (result)
         {
@@ -73,13 +90,12 @@ void isProcessWild(int currRealMem, int peakRealMem,
     }
 }
 
-static processID[MAX_TRACK_SIZE] = {0};
+static int processID[MAX_TRACK_SIZE] = {0};
 
 void setup(const char *pid)
 {
     char *command = va("pgrep %s", pid);
     FILE *file = popen(command, "r");
-
     if (file == NULL)
     {
         perror("popen");
@@ -96,7 +112,7 @@ void setup(const char *pid)
         processID[i] = atoi(result);
         i++;
 
-        if (i > MAX_TRACK_SIZE - 1)
+        if (i >= MAX_TRACK_SIZE)
         {
             printf("Too many processes found\n");
             break;
@@ -116,7 +132,7 @@ void analyse()
     {
         char *command = va("cat /proc/%d/status", processID[i]);
         status = popen(command, "r");
-        if (file == NULL)
+        if (status == NULL)
         {
             perror("popen");
             exit(EXIT_FAILURE);
