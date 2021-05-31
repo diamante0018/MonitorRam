@@ -16,7 +16,6 @@ char *va(const char *fmt, ...)
     va_start(ap, fmt);
     vsnprintf(dest, VA_BUFFER_SIZE, fmt, ap);
     va_end(ap);
-    dest[VA_BUFFER_SIZE - 1] = '\0';
 
     return dest;
 }

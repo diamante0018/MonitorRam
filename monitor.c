@@ -7,7 +7,6 @@
 #include <signal.h>
 
 #define MAX_MEMORY 1048576
-#define PROGRAM_NAME 255
 #define MAX_TRACK_SIZE 30
 
 FILE *popen(const char *command, const char *mode);
