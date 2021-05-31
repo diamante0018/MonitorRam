@@ -11,4 +11,4 @@ Max memory usage is defined in monitor.c
 ## How to?
 
 Compile from source using the provided makefile
-./prog <NAME OF PROGRAM>
+`./prog <NAME OF PROGRAM>`
