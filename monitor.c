@@ -141,5 +141,6 @@ void analyse()
         checkStatus(status, &currRealMem, &peakRealMem, &currVirtMem, &peakVirtMem);
         isProcessWild(currRealMem, peakRealMem, currVirtMem, peakVirtMem, processID[i]);
         pclose(status);
+        currRealMem = 0, peakRealMem = 0, currVirtMem = 0, peakVirtMem = 0;
     }
 }
