@@ -13,6 +13,12 @@ FILE *popen(const char *command, const char *mode);
 int pclose(FILE *stream);
 char *strerror(int errnum);
 
+void printGenericStatusError()
+{
+    printf("Error while parsing file\n");
+    printf("Processes may not be correctly monitored\n");
+}
+
 void checkStatus(FILE *file, int *currRealMem, int *peakRealMem,
                  int *currVirtMem, int *peakVirtMem)
 {
@@ -26,7 +32,7 @@ void checkStatus(FILE *file, int *currRealMem, int *peakRealMem,
         {
             if (fscanf(file, " %d", currRealMem) == EOF)
             {
-                printf("Error while parsing file\n");
+                printGenericStatusError();
                 return;
             }
         }
@@ -35,7 +41,7 @@ void checkStatus(FILE *file, int *currRealMem, int *peakRealMem,
         {
             if (fscanf(file, " %d", peakRealMem) == EOF)
             {
-                printf("Error while parsing file\n");
+                printGenericStatusError();
                 return;
             }
         }
@@ -44,7 +50,7 @@ void checkStatus(FILE *file, int *currRealMem, int *peakRealMem,
         {
             if (fscanf(file, " %d", currVirtMem) == EOF)
             {
-                printf("Error while parsing file\n");
+                printGenericStatusError();
                 return;
             }
         }
@@ -53,7 +59,7 @@ void checkStatus(FILE *file, int *currRealMem, int *peakRealMem,
         {
             if (fscanf(file, " %d", peakVirtMem) == EOF)
             {
-                printf("Error while parsing file\n");
+                printGenericStatusError();
                 return;
             }
         }
