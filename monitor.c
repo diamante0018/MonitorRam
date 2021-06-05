@@ -16,7 +16,7 @@ char *strerror(int errnum);
 void printGenericStatusError()
 {
     printf("Error while parsing file\n");
-    printf("Processes may not be correctly monitored\n");
+    printf("Processes may be monitored incorrectly\n");
 }
 
 void checkStatus(FILE *file, int *currRealMem, int *peakRealMem,
