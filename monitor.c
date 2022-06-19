@@ -107,6 +107,8 @@ static int is_process_wild(int curr_real_mem, int peak_real_mem,
 }
 
 int setup(const char* pid) {
+  memset(&processes, 0, sizeof(struct process_monitor));
+
   char* command = va("pgrep %s", pid);
   FILE* file = popen(command, "r");
   if (file == NULL) {
@@ -116,9 +118,8 @@ int setup(const char* pid) {
 
   char result[BUFFER_SIZE];
   memset(result, 0, sizeof result);
-  int i = 0;
 
-  memset(&processes, 0, sizeof(struct process_monitor));
+  int i = 0;
   while (fgets(result, BUFFER_SIZE, file) && i < MAX_TRACK_SIZE) {
     printf("Process ID: %s", result);
     processes[i].id = atoi(result);
