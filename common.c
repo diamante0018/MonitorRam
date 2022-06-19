@@ -1,15 +1,14 @@
+#include <time.h>
+#include <unistd.h>
+
 #include "common.h"
 
 // Prints the time
-void printTimeStamp(FILE *fp)
-{
-    time_t ltime;
-    struct tm result;
-    char stime[32];
-    bzero(stime, sizeof(stime));
+void get_time_stamp(char* buf) {
+  time_t ltime;
+  struct tm result;
 
-    ltime = time(NULL);
-    localtime_r(&ltime, &result);
-    asctime_r(&result, stime);
-    fprintf(fp, "\nTimeStamp: %s\n", stime);
+  ltime = time(NULL);
+  localtime_r(&ltime, &result);
+  asctime_r(&result, buf);
 }

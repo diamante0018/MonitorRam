@@ -1,7 +1,7 @@
-TARGET = prog
+TARGET = monitor
 LIBS = -lm
 CC = gcc
-CFLAGS = -O2 -g -Wall
+CFLAGS = -O2 -g -Wall -std=gnu11
 
 .PHONY: clean all default
 

@@ -1,7 +1,7 @@
 #ifndef MONITOR_H
 #define MONITOR_H
 
-void setup(const char *pid);
-void analyse();
+int setup(const char* pid);
+int analyse();
 
 #endif /* MONITOR_H */

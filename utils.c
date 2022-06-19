@@ -1,21 +1,29 @@
-#include "common.h"
+#include <stdio.h>
+#include <stdarg.h>
+#include <threads.h>
+
 #include "utils.h"
 
 #define VA_BUFFER_COUNT 4
 #define VA_BUFFER_SIZE 4096
 
-char *va(const char *fmt, ...)
-{
-    static char g_vaBuffer[VA_BUFFER_COUNT][VA_BUFFER_SIZE];
-    static int g_vaNextBufferIndex = 0;
+thread_local struct {
+  char va_string[VA_BUFFER_COUNT][VA_BUFFER_SIZE];
+  int index;
+} va_info_t;
 
-    va_list ap;
-    char *dest = &g_vaBuffer[g_vaNextBufferIndex][0];
-    bzero(dest, VA_BUFFER_SIZE);
-    g_vaNextBufferIndex = (g_vaNextBufferIndex + 1) % VA_BUFFER_COUNT;
-    va_start(ap, fmt);
-    vsnprintf(dest, VA_BUFFER_SIZE, fmt, ap);
-    va_end(ap);
+char* va(const char* fmt, ...) {
+  va_list ap;
 
-    return dest;
+  int index = va_info_t.index;
+  va_info_t.index = (va_info_t.index + 1) % VA_BUFFER_COUNT;
+  char* buf = va_info_t.va_string[index];
+
+  va_start(ap, fmt);
+  vsnprintf(buf, VA_BUFFER_SIZE, fmt, ap);
+  va_end(ap);
+
+  buf[VA_BUFFER_SIZE - 1] = '\0';
+
+  return buf;
 }
