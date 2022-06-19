@@ -13,6 +13,13 @@
 #define MAX_MEMORY 1048576
 #define MAX_TRACK_SIZE 30
 
+struct process_monitor {
+  int id;
+  int active;
+};
+
+static struct process_monitor processes[MAX_TRACK_SIZE];
+
 FILE* popen(const char* command, const char* type);
 int pclose(FILE* stream);
 char* strerror(int errnum);
@@ -98,13 +105,6 @@ static int is_process_wild(int curr_real_mem, int peak_real_mem,
 
   return 1;
 }
-
-struct process_monitor {
-  int id;
-  int active;
-};
-
-static struct process_monitor processes[MAX_TRACK_SIZE];
 
 int setup(const char* pid) {
   char* command = va("pgrep %s", pid);
