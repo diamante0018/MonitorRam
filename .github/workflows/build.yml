@@ -1,0 +1,64 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - "*"
+    types: [opened, synchronize, reopened]
+jobs:
+build-lin:
+    name: Build Linux
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration:
+          - Debug
+          - Release
+        arch:
+          - x86
+          - x64
+        include:
+          - configuration: Debug
+            config: debug
+          - configuration: Release
+            config: release
+    steps:
+      - name: Check out files
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+          fetch-depth: 0
+          # NOTE - If LFS ever starts getting used during builds, switch this to true!
+          lfs: false
+
+      - name: Install dependencies (x64)
+        if: matrix.arch == 'x64'
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install libcurl4-gnutls-dev
+      - name: Install dependencies (x86)
+        if: matrix.arch == 'x86'
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get -y install gcc-multilib g++-multilib libcurl4-gnutls-dev:i386
+      - name: Generate project files
+        run: ./generate.sh
+
+      - name: Set up problem matching
+        uses: ammaraskar/gcc-problem-matcher@master
+
+      - name: Build ${{matrix.configuration}} ${{matrix.arch}} binaries
+        run: |
+          pushd build
+          make config=${{matrix.config}}_${{matrix.arch}} -j$(nproc)
+      - name: Upload ${{matrix.configuration}} ${{matrix.arch}} binaries
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: Linux ${{matrix.configuration}} ${{matrix.arch}} binaries
+          path: |
+            build/bin/${{matrix.arch}}/${{matrix.configuration}}/MonitorRam
