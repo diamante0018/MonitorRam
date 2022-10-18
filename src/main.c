@@ -7,7 +7,7 @@
 
 volatile sig_atomic_t sigint_received = 0;
 
-void sigint_handler(int a) { sigint_received = 1; }
+void sigint_handler(int) { sigint_received = 1; }
 
 int main(int argc, char* argv[]) {
   if (argc < 2) {
