@@ -9,7 +9,7 @@ volatile sig_atomic_t sigint_received = 0;
 
 void sigint_handler(int a) {
   sigint_received = 1;
-  (void) a;
+  (void)a;
 }
 
 int main(int argc, char* argv[]) {
