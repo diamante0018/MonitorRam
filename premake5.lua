@@ -57,4 +57,3 @@ files {"./src/**.h", "./src/**.c"}
 includedirs {"./src", "%{prj.location}/src"}
 
 resincludedirs {"%{_MAIN_SCRIPT_DIR}/src"}
-	
