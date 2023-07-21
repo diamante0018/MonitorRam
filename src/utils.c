@@ -1,23 +1,24 @@
-#include <stdio.h>
 #include <stdarg.h>
-#include <threads.h>
+#include <stdio.h>
 
 #include "utils.h"
 
 #define VA_BUFFER_COUNT 4
 #define VA_BUFFER_SIZE 4096
 
-thread_local struct {
+struct va_info_s {
   char va_string[VA_BUFFER_COUNT][VA_BUFFER_SIZE];
   int index;
-} va_info_t;
+};
+
+static __thread struct va_info_s va_provider;
 
 char* va(const char* fmt, ...) {
   va_list ap;
 
-  int index = va_info_t.index;
-  va_info_t.index = (va_info_t.index + 1) % VA_BUFFER_COUNT;
-  char* buf = va_info_t.va_string[index];
+  int index = va_provider.index;
+  va_provider.index = (va_provider.index + 1) % VA_BUFFER_COUNT;
+  char* buf = va_provider.va_string[index];
 
   va_start(ap, fmt);
   vsnprintf(buf, VA_BUFFER_SIZE, fmt, ap);

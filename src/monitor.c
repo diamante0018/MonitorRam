@@ -1,14 +1,15 @@
+#include <errno.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <signal.h>
-#include <errno.h>
 
 #include <sys/types.h>
 
+#include "monitor.h"
+
 #include "common.h"
 #include "utils.h"
-#include "monitor.h"
 
 #define MAX_MEMORY 1048576
 #define MAX_TRACK_SIZE 30
@@ -96,7 +97,7 @@ static int is_process_wild(int curr_real_mem, int peak_real_mem,
           "KiB\ncurr_virt_mem:%d KiB\npeak_virt_mem:%d KiB\n",
           id, curr_real_mem, peak_real_mem, curr_virt_mem, peak_virt_mem);
 
-  if (result != 0) {
+  if (result) {
     fprintf(fp, "Error while terminating process: %d\n", id);
     fprintf(fp, "Error message: %s\n", strerror(errno));
   }
@@ -111,7 +112,7 @@ int setup(const char* pid) {
 
   char* command = va("pgrep %s", pid);
   FILE* file = popen(command, "r");
-  if (file == NULL) {
+  if (!file) {
     perror("popen");
     return 1;
   }
@@ -128,7 +129,7 @@ int setup(const char* pid) {
     ++i;
   }
 
-  if (i == 0) {
+  if (!i) {
     printf("No process was found\n");
     pclose(file);
     return 1;
@@ -140,13 +141,11 @@ int setup(const char* pid) {
 int analyse() {
   int i;
   FILE* status;
-  int curr_real_mem = 0, peak_real_mem = 0, curr_virt_mem = 0,
-      peak_virt_mem = 0;
 
   for (i = 0; i < MAX_TRACK_SIZE && processes[i].active == 1; ++i) {
     char* command = va("cat /proc/%d/status", processes[i].id);
     status = popen(command, "r");
-    if (status == NULL) {
+    if (!status) {
       perror("popen");
       pclose(status);
       return 1;
@@ -156,6 +155,9 @@ int analyse() {
     printf("Checking %d\n", processes[i].id);
 #endif
 
+    int curr_real_mem = 0, peak_real_mem = 0, curr_virt_mem = 0,
+        peak_virt_mem = 0;
+
     check_status(status, &curr_real_mem, &peak_real_mem, &curr_virt_mem,
                  &peak_virt_mem);
     if (is_process_wild(curr_real_mem, peak_real_mem, curr_virt_mem,
@@ -164,7 +166,6 @@ int analyse() {
     }
 
     pclose(status);
-    curr_real_mem = 0, peak_real_mem = 0, curr_virt_mem = 0, peak_virt_mem = 0;
   }
 
   return 0;

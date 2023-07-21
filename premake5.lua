@@ -6,7 +6,7 @@ targetdir "%{wks.location}/bin/%{cfg.platform}/%{cfg.buildcfg}"
 
 configurations {"Debug", "Release"}
 
-platforms {"x86", "x64"}
+platforms {"x86", "x64", "arm64"}
 
 filter "platforms:x86"
 architecture "x86"
@@ -16,7 +16,9 @@ filter "platforms:x64"
 architecture "x86_64"
 filter {}
 
-buildoptions {"-std=gnu11"}
+filter "platforms:arm64"
+architecture "ARM64"
+filter {}
 
 symbols "On"
 staticruntime "On"
@@ -25,20 +27,18 @@ warnings "Extra"
 characterset "ASCII"
 
 if os.istarget("linux") then
-	buildoptions {"-pthread"}
-	linkoptions {"-pthread"}
+	buildoptions "-pthread"
+	linkoptions "-pthread"
 end
 
 if os.getenv("CI") then
-	defines {"CI"}
+	defines "CI"
 end
-
-flags {"NoIncrementalLink", "NoMinimalRebuild", "MultiProcessorCompile", "No64BitChecks"}
 
 filter "configurations:Release"
 	optimize "Speed"
-	defines {"NDEBUG"}
-	flags {"FatalCompileWarnings"}
+	defines "NDEBUG"
+	flags "FatalCompileWarnings"
 filter {}
 
 filter "configurations:Debug"
@@ -48,7 +48,9 @@ filter {}
 
 project "MonitorRam"
 kind "ConsoleApp"
+
 language "C"
+cdialect "gnu89"
 
 targetname "MonitorRam"
 
