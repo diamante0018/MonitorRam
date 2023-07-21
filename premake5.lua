@@ -48,6 +48,7 @@ filter {}
 
 project "MonitorRam"
 kind "ConsoleApp"
+
 language "C"
 cdialect "gnu89"
 
