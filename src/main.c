@@ -1,5 +1,5 @@
-#include <stdio.h>
 #include <signal.h>
+#include <stdio.h>
 #include <unistd.h>
 
 #include "common.h"
@@ -14,7 +14,6 @@ void sigint_handler(int a) {
 
 int main(int argc, char* argv[]) {
   if (argc < 2) {
-    printf("Name of the program is missing\n");
     printf("Usage: <name of the program>\n");
     return 2;
   }
