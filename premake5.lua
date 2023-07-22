@@ -36,7 +36,7 @@ if os.getenv("CI") then
 end
 
 filter "configurations:Release"
-	optimize "Speed"
+	optimize "Size"
 	defines "NDEBUG"
 	flags "FatalCompileWarnings"
 filter {}
