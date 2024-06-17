@@ -8,6 +8,14 @@ on:
     branches:
       - "*"
     types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PREMAKE_VERSION: "5.0.0-beta2"
+
 jobs:
   build-linux:
     name: Build Linux
@@ -25,7 +33,7 @@ jobs:
             config: release
     steps:
       - name: Check out files
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@main
         with:
           submodules: true
           fetch-depth: 0
@@ -39,9 +47,9 @@ jobs:
           sudo apt-get install crossbuild-essential-arm64 -y
 
       - name: Install Premake5
-        uses: abel0b/setup-premake@v2.3
+        uses: diamante0018/setup-premake@master
         with:
-          version: "5.0.0-beta2"
+          version: ${{ env.PREMAKE_VERSION }}
 
       - name: Generate project files
         run: premake5 gmake2
@@ -65,7 +73,7 @@ jobs:
           make config=${{matrix.config}}_${{matrix.arch}} -j$(nproc)
 
       - name: Upload ${{matrix.configuration}} ${{matrix.arch}} binaries
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@main
         with:
           name: Linux ${{matrix.configuration}} ${{matrix.arch}} binaries
           path: |
