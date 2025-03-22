@@ -1,5 +1,6 @@
 #include <signal.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "common.h"
@@ -19,7 +20,12 @@ int main(int argc, char* argv[]) {
   }
 
   struct sigaction act;
+  memset(&act, 0, sizeof(act));
+
   act.sa_handler = sigint_handler;
+  sigemptyset(&act.sa_mask); // Initialize the signal mask to empty
+  act.sa_flags = 0;          // Set flags to 0
+
   sigaction(SIGINT, &act, NULL);
 
   int result = setup(argv[1]);

@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <errno.h>
 #include <signal.h>
 #include <stdio.h>
@@ -108,6 +109,13 @@ static int is_process_wild(int curr_real_mem, int peak_real_mem,
 }
 
 int setup(const char* pid) {
+  assert(pid);
+
+  if (*pid == '\0') {
+    printf("Invalid PID\n");
+    return 1;
+  }
+
   memset(&processes, 0, sizeof(processes));
 
   char* command = va("pgrep %s", pid);

@@ -1,0 +1,32 @@
+{
+    "name": "MonitorRam Dev Container",
+    "build": {
+        "context": "..",
+        "dockerfile": "./Dockerfile"
+    },
+    "capAdd": [
+        "SYS_PTRACE"
+    ],
+    "securityOpt": [
+        "seccomp=unconfined"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools-extension-pack"
+            ],
+            "settings": {
+                "C_Cpp.clang_format_style": "file",
+                "C_Cpp.formatting": "clangFormat",
+                "editor.formatOnSave": true
+            }
+        }
+    },
+    "runArgs": [
+        "--network=host"
+    ],
+    "forwardPorts": [
+        3000
+    ],
+    "remoteUser": "vscode"
+}
