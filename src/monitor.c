@@ -147,7 +147,6 @@ int analyse() {
     status = popen(command, "r");
     if (!status) {
       perror("popen");
-      pclose(status);
       return 1;
     }
 
