@@ -38,7 +38,7 @@ end
 filter "configurations:Release"
 	optimize "Size"
 	defines "NDEBUG"
-	flags "FatalCompileWarnings"
+	fatalwarnings "All"
 filter {}
 
 filter "configurations:Debug"
