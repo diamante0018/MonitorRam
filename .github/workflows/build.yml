@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  PREMAKE_VERSION: "5.0.0-beta5"
+  PREMAKE_VERSION: "5.0.0-beta8"
 
 jobs:
   build-linux:
@@ -44,10 +44,10 @@ jobs:
         if: matrix.arch == 'arm64'
         run: |
           sudo apt-get update
-          sudo apt-get install crossbuild-essential-arm64 -y
+          sudo apt-get install -y crossbuild-essential-arm64
 
       - name: Install Premake5
-        uses: diamante0018/setup-premake@v0.0.2
+        uses: diamante0018/setup-premake@master
         with:
           version: ${{ env.PREMAKE_VERSION }}
 

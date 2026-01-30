@@ -32,11 +32,11 @@ RUN python3 -m venv /opt/venv && \
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Download and install Premake5
-RUN wget https://github.com/premake/premake-core/releases/download/v5.0.0-beta5/premake-5.0.0-beta5-linux.tar.gz \
-    && tar -xvf premake-5.0.0-beta5-linux.tar.gz \
+RUN wget https://github.com/premake/premake-core/releases/download/v5.0.0-beta8/premake-5.0.0-beta8-linux.tar.gz \
+    && tar -xvf premake-5.0.0-beta8-linux.tar.gz \
     && mv premake5 /usr/local/bin/ \
     && chmod +x /usr/local/bin/premake5 \
-    && rm premake-5.0.0-beta5-linux.tar.gz
+    && rm premake-5.0.0-beta8-linux.tar.gz
 
 ARG USERNAME=vscode
 ARG USER_UID=1000
