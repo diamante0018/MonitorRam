@@ -7,7 +7,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/bin/x64/Debug/MonitorRam",
             "args": [
-                ""
+                "MonitorRam"
             ], // Arguments to pass to your program
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
