@@ -11,7 +11,7 @@ struct va_info_s {
   int index;
 };
 
-static __thread struct va_info_s va_provider;
+static __thread struct va_info_s va_provider = {0};
 
 char* va(const char* fmt, ...) {
   va_list ap;
